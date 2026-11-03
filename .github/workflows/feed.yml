@@ -26,9 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4 (= v4.4.0), pinned to a commit: a moved tag can't change this job
         with:
           path: code
+          persist-credentials: false   # the code checkout never pushes; the data branch uses its own token URL
       - name: Check out the data branch
         env:
           GH_TOKEN: ${{ github.token }}

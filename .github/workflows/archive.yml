@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 200
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4 (= v4.4.0), pinned to a commit; keeps credentials for the push below
       - name: Archive the json file when a deadline is ~2 h away
         env:
           FORCE: ${{ inputs.force && '1' || '' }}

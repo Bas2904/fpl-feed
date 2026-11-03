@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-fpl-feed v1 (3 Nov 2026): saves public Fantasy Premier League API data for one mini-league into a folder that the
-GitHub Action publishes. Standard library only. No login, no cookies, no secrets: every endpoint used here is public.
+fpl-feed v1.1 (v1 3 Nov 2026; v1.1 3 Nov 2026 red team: core/daily runs started by hand always publish status.json,
+so a run that changed nothing still shows as fresh): saves public Fantasy Premier League API data for one mini-league
+into a folder that the GitHub Action publishes. Standard library only. No login, no cookies, no secrets: every
+endpoint used here is public.
 
 Usage: python3 feed.py <task> <data_dir>
   auto     what the schedule runs every 2 hours: core, plus daily if the last daily run is 20+ hours old
@@ -336,6 +338,8 @@ def main(task, root):
         archive(root); return
     T = Tree(root)
     extra = dict(task=task)
+    if task in ('core', 'daily'):  # v1.1: a run started by hand always publishes status.json (its age = this run),
+        extra['force_status'] = True  # so 'nothing changed' can no longer look like a stale feed; 'auto' keeps the 6 h heartbeat
     if task == 'probe':
         out = probe(T); extra.update(probe_ok=out['all_ok'], force_status=True)
         T.finish(extra); sys.exit(0 if out['all_ok'] else 1)

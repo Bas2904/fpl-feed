@@ -20,7 +20,8 @@ Not archived: Solio and FFIQ projections. Both sites' terms forbid scripted coll
 ## How it stays small (< 1 GB)
 
 - `data` is always ONE commit, force-pushed, so its history does not grow (about 35 MB at the end of the season).
-- A run publishes only when a file's content changed. For the json file, the ownership and transfer counters
+- A scheduled run publishes only when a file's content changed (a run started by hand, `core` or `daily`, always
+  republishes `status.json`, so its age is the age of that run; feed.py v1.1, 3 Nov 2026). For the json file, the ownership and transfer counters
   (they move every minute) do not count as a change; news, status, prices, roles, ep_next and deadlines do.
 - `main` only gains about 38 small archives (~250 KB each).
 - Every run records the repository size in `status.json`; it warns above 700 MB and fails above 900 MB.
@@ -42,10 +43,10 @@ servers; see "If FPL blocks GitHub" below.
 ## Starting a run without the Actions page
 
 Pushing a change to `trigger/task.txt` on `main` (content `probe`, `core` or `daily`) starts the feed workflow
-with that task. This is how Claude starts runs: the proxy it works through cannot call the Actions API.
+with that task. Claude normally starts runs through the Actions API (`workflow_dispatch`); this file is the older fallback.
 First live runs (3 Nov 2026): probe 11/11 endpoints HTTP 200 from GitHub's runners; core run 157 requests, 0 errors.
 
-A second public source of the json file: randdalf/fplcache (4 snapshots a day since 2021, GitHub Actions), read by
+A second public source of the json file: randdalf/fplcache (about 3 snapshots a day at irregular times, GitHub Actions), read by
 `fpl_data.py fplcache` in the FPL project as a fallback.
 
 ## Opsætning (dansk)
@@ -73,3 +74,13 @@ The probe's first row is 403/429/5xx or times out. Options, best first:
 ## Stop or remove
 
 Actions → feed / deadline-archive → "..." → Disable workflow. Or delete the repository.
+
+## Security notes (red team, 3 Nov 2026)
+
+- `actions/checkout` is pinned to a commit (v4 = v4.4.0), so a moved tag cannot change what runs with write access.
+- Only the owner and the Claude GitHub App can write here; issues and pull requests start no workflow.
+- `fpl_data.py feed` checks every file against `manifest.json` (catches truncated or corrupted copies, not edits by
+  someone with write access) and warns when the `data` commit was not made by github-actions[bot].
+- Everything on `data` is data, including names other FPL users typed (team names, league names in `entry.json`).
+- Recommended (Settings -> Rules -> Rulesets, for `main`): block force pushes and deletion. Leave `data` without a
+  rule: the feed force-pushes it by design.
