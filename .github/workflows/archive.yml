@@ -1,5 +1,5 @@
 name: deadline-archive
-# Two hours before each FPL deadline: a dated, xz-compressed copy of the json file in archive/<season>/ on main.
+# Two hours before each FPL deadline: a dated, xz-compressed copy of the json file in archive/<season>/ on main. Schedule aktiveret af Bastian
 # Runs every 2 hours; when the next deadline is 2-4.2 hours away it sleeps until exactly T-2h.
 on:
   schedule:
