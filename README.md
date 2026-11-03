@@ -39,6 +39,15 @@ Actions → feed → Run workflow → task `probe`. The run summary shows one ro
 the same table is saved as `probe.json` on `data`. If the json file row is not 200, FPL is blocking GitHub's
 servers; see "If FPL blocks GitHub" below.
 
+## Starting a run without the Actions page
+
+Pushing a change to `trigger/task.txt` on `main` (content `probe`, `core` or `daily`) starts the feed workflow
+with that task. This is how Claude starts runs: the proxy it works through cannot call the Actions API.
+First live runs (3 Nov 2026): probe 11/11 endpoints HTTP 200 from GitHub's runners; core run 157 requests, 0 errors.
+
+A second public source of the json file: randdalf/fplcache (4 snapshots a day since 2021, GitHub Actions), read by
+`fpl_data.py fplcache` in the FPL project as a fallback.
+
 ## Opsætning (dansk)
 
 1. github.com → **+** → **New repository**. Navn: `fpl-feed`. **Public** (Actions er gratis og ubegrænsede for
