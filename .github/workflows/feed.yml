@@ -1,0 +1,58 @@
+name: feed
+# Every 2 hours: the json file, fixtures, event-status, league 600517, all members' entry/history/picks, my transfers,
+# event/N/live while a GW is live; once a day also element-summary and set-piece notes. Publishes the data branch as
+# ONE commit (force-pushed), and only when something changed, so the repository stays small.
+on:
+  schedule:
+    - cron: '17 */2 * * *'
+  workflow_dispatch:
+    inputs:
+      task:
+        description: 'probe = test that FPL answers; core / daily = run that part now'
+        required: true
+        default: probe
+        type: choice
+        options: [probe, core, daily]
+permissions:
+  contents: write
+concurrency:
+  group: feed
+  cancel-in-progress: false
+jobs:
+  feed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: code
+      - name: Check out the data branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          url="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git ls-remote --exit-code --heads "$url" data >/dev/null 2>&1; then
+            git clone --quiet --depth 1 --branch data "$url" data
+          else
+            mkdir data && git -C data init --quiet -b data
+          fi
+      - name: Fetch from FPL
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TASK: ${{ github.event_name == 'workflow_dispatch' && inputs.task || 'auto' }}
+        run: python3 code/feed.py "$TASK" data
+      - name: Publish (one commit, only if something changed)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd data
+          git add -A
+          if git rev-parse -q --verify HEAD >/dev/null && git diff --cached --quiet; then echo "No changes, nothing published"; exit 0; fi
+          if [ -z "$(git ls-files)" ]; then echo "Nothing to publish"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --quiet --orphan snapshot
+          git commit --quiet -F "$RUNNER_TEMP/commit_msg.txt"
+          git push --quiet --force "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" snapshot:data
+          echo "Published $(git ls-files | wc -l) files"

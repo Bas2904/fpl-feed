@@ -1,0 +1,35 @@
+name: deadline-archive
+# Two hours before each FPL deadline: a dated, xz-compressed copy of the json file in archive/<season>/ on main.
+# Runs every 2 hours; when the next deadline is 2-4.2 hours away it sleeps until exactly T-2h.
+on:
+  schedule:
+    - cron: '47 */2 * * *'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'archive now, whatever the time to the deadline'
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency:
+  group: archive
+  cancel-in-progress: false
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    steps:
+      - uses: actions/checkout@v4
+      - name: Archive the json file when a deadline is ~2 h away
+        env:
+          FORCE: ${{ inputs.force && '1' || '' }}
+        run: python3 feed.py archive .
+      - name: Commit
+        run: |
+          mkdir -p archive && git add archive
+          if git diff --cached --quiet; then echo "Nothing archived"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit --quiet -F "$RUNNER_TEMP/commit_msg.txt"
+          for i in 1 2 3; do git pull --quiet --rebase && git push --quiet && break; sleep 10; done
