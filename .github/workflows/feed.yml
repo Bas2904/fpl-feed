@@ -1,5 +1,5 @@
 name: feed
-# Every 2 hours: the json file, fixtures, event-status, league 600517, all members' entry/history/picks, my transfers,
+# Every 2 hours: the json file, fixtures, event-status, league 600517, all members' entry/history/picks, my transfers, Schedule aktiveret af Bastian
 # event/N/live while a GW is live; once a day also element-summary and set-piece notes. Publishes the data branch as
 # ONE commit (force-pushed), and only when something changed, so the repository stays small.
 on:
