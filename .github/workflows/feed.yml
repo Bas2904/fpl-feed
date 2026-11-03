@@ -5,6 +5,9 @@ name: feed
 on:
   schedule:
     - cron: '17 */2 * * *'
+  push:                       # lets Claude start a run by pushing trigger/task.txt (probe, core or daily);
+    branches: [main]          # the proxy it works through cannot call the Actions API
+    paths: ['trigger/task.txt']
   workflow_dispatch:
     inputs:
       task:
@@ -40,7 +43,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TASK: ${{ github.event_name == 'workflow_dispatch' && inputs.task || 'auto' }}
-        run: python3 code/feed.py "$TASK" data
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = push ]; then TASK=$(tr -dc 'a-z' < code/trigger/task.txt); fi
+          case "$TASK" in auto|core|daily|probe) echo "task: $TASK" ;; *) echo "unknown task '$TASK'"; exit 1 ;; esac
+          python3 code/feed.py "$TASK" data
       - name: Publish (one commit, only if something changed)
         if: always()
         env:
