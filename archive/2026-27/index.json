@@ -1,0 +1,12 @@
+[
+ {
+  "gw": 10,
+  "deadline": "2026-11-06T18:30:00Z",
+  "archived_at": "2026-11-06T16:30:00Z",
+  "hours_before": 2.0,
+  "file": "gw10_bootstrap-static_2026-11-06T1630Z.json.xz",
+  "sha256_json": "d65d41944dac7b4300a797b6b821f1c284af482e870d62afe92398231eaabc90",
+  "bytes_json": 1793365,
+  "players": 670
+ }
+]
