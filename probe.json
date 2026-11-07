@@ -1,0 +1,106 @@
+{
+ "generated_at": "2026-11-03T07:45:03Z",
+ "run_url": "https://github.com/Bas2904/fpl-feed/actions/runs/41598364929",
+ "all_ok": true,
+ "results": [
+  {
+   "endpoint": "json file",
+   "path": "bootstrap-static/",
+   "ok": true,
+   "code": 200,
+   "bytes": 1791103,
+   "ms": 536,
+   "check": "670 players, 38 events"
+  },
+  {
+   "endpoint": "fixtures",
+   "path": "fixtures/",
+   "ok": true,
+   "code": 200,
+   "bytes": 323084,
+   "ms": 371,
+   "check": "380 fixtures"
+  },
+  {
+   "endpoint": "event-status",
+   "path": "event-status/",
+   "ok": true,
+   "code": 200,
+   "bytes": 220,
+   "ms": 364,
+   "check": "3 days"
+  },
+  {
+   "endpoint": "standings",
+   "path": "leagues-classic/600517/standings/",
+   "ok": true,
+   "code": 200,
+   "bytes": 3101,
+   "ms": 475,
+   "check": "13 teams"
+  },
+  {
+   "endpoint": "entry",
+   "path": "entry/4358815/",
+   "ok": true,
+   "code": 200,
+   "bytes": 6986,
+   "ms": 524,
+   "check": "id 4358815"
+  },
+  {
+   "endpoint": "history",
+   "path": "entry/4358815/history/",
+   "ok": true,
+   "code": 200,
+   "bytes": 2323,
+   "ms": 467,
+   "check": "9 GWs, 2 chips"
+  },
+  {
+   "endpoint": "picks",
+   "path": "entry/4358815/event/9/picks/",
+   "ok": true,
+   "code": 200,
+   "bytes": 1864,
+   "ms": 466,
+   "check": "GW9: 15 picks"
+  },
+  {
+   "endpoint": "transfers",
+   "path": "entry/4358815/transfers/",
+   "ok": true,
+   "code": 200,
+   "bytes": 2840,
+   "ms": 375,
+   "check": "20 transfers"
+  },
+  {
+   "endpoint": "live",
+   "path": "event/9/live/",
+   "ok": true,
+   "code": 200,
+   "bytes": 475033,
+   "ms": 373,
+   "check": "GW9: 670 players"
+  },
+  {
+   "endpoint": "element-summary",
+   "path": "element-summary/1/",
+   "ok": true,
+   "code": 200,
+   "bytes": 17259,
+   "ms": 365,
+   "check": "9 matches"
+  },
+  {
+   "endpoint": "set-piece-notes",
+   "path": "team/set-piece-notes/",
+   "ok": true,
+   "code": 200,
+   "bytes": 2320,
+   "ms": 365,
+   "check": "20 teams"
+  }
+ ]
+}
